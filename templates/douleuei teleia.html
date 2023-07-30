@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CGL Search Engine</title>
+    <!-- Add Bootstrap CSS link here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Add your custom styles here if needed */
+        body {
+            padding-top: 60px; /* To add space for the header */
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #005B9A;
+            padding: 15px;
+            text-align: left;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Coventry University</div>
+    <div class="container mt-4">
+        <h1 class="text-center">CGL Search Engine</h1>
+
+        <!-- Add the search form here -->
+        <form method="POST" action="/">
+            <div class="input-group mb-3">
+                <input type="text" name="search_query" class="form-control" placeholder="Enter your search query">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Display the search query -->
+        <div class="text-center mb-3">
+            <strong></strong> {{ search_query }}
+        </div>
+
+        <!-- Display the search results here -->
+        <div class="search-results">
+            {% if search_results %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Title</th>
+                                <th>Authors</th>
+                                <th>Date</th>
+                                <th>Title URL</th>
+                                <th>Authors URL</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-light">
+                            {{ search_results | safe }}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results - CGL Search Engine</title>
+    <!-- Add Bootstrap CSS link here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">Search Results</h1>
+
+        <!-- Display the search query -->
+        <div class="text-center mb-3">
+            <strong>Search Query:</strong> {{ search_query }}
+        </div>
+
+        <!-- Display the search results here -->
+        <div class="table-responsive">
+            {% if search_results %}
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>Authors</th>
+                            <th>Date</th>
+                            <th>Title URL</th>
+                            <th>Authors URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ search_results | safe }}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info">
+                    No results found for the search query.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
