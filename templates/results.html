@@ -4,8 +4,39 @@
     <title>Search Results - CGL Search Engine</title>
     <!-- Add Bootstrap CSS link here -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #005B9A;
+            padding: 15px;
+            text-align: left;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Style the column names in dark blue */
+        .table thead th {
+            background-color: #005B9A;
+            color: white;
+        }
+
+        /* Set a fixed width for each table column */
+        .table-layout-fixed {
+            table-layout: fixed;
+        }
+
+        /* Set the width for each table header cell */
+        .table th {
+            width: 20%;
+        }
+    </style>
 </head>
 <body>
+    <div class="header">Coventry University</div>
     <div class="container mt-4">
         <h1 class="text-center">Search Results</h1>
 
@@ -17,8 +48,8 @@
         <!-- Display the search results here -->
         <div class="table-responsive">
             {% if search_results %}
-                <table class="table table-bordered table-hover">
-                    <thead class="thead-dark">
+                <table class="table table-bordered table-hover table-layout-fixed">
+                    <thead>
                         <tr>
                             <th>Title</th>
                             <th>Authors</th>

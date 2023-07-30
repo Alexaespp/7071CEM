@@ -357,7 +357,7 @@ def search_page():
                     clickable_links.append(f'<a href="{url}" target="_blank">{url}</a>')
                 return ', '.join(clickable_links)
 
-            search_results_df["Title URL1"] = search_results_df["Title URL"].apply(make_clickable)
+            search_results_df["Title URL"] = search_results_df["Title URL"].apply(make_clickable)
             search_results_df["Authors URL"] = search_results_df["Authors URL"].apply(make_clickable)
             search_results_df_html = search_results_df.to_html(escape=False, index=False)
             return render_template('results.html', search_query=search_query, search_results=search_results_df_html)
