@@ -49,15 +49,6 @@
         <div class="table-responsive">
             {% if search_results %}
                 <table class="table table-bordered table-hover table-layout-fixed">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Authors</th>
-                            <th>Date</th>
-                            <th>Title URL</th>
-                            <th>Authors URL</th>
-                        </tr>
-                    </thead>
                     <tbody>
                         {{ search_results | safe }}
                     </tbody>

@@ -314,6 +314,7 @@ def search_page():
                 ])
                 df['Title URL'] = df['Title URL'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
                 df['Authors URL'] = df['Authors URL'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
+                return df.to_html(escape=False, index=False, header=False)
 
             urls_dict = {}
             authors_urls_dict = {}
@@ -360,6 +361,11 @@ def search_page():
             search_results_df["Title URL"] = search_results_df["Title URL"].apply(make_clickable)
             search_results_df["Authors URL"] = search_results_df["Authors URL"].apply(make_clickable)
             search_results_df_html = search_results_df.to_html(escape=False, index=False)
+            if not search_results_df.empty:
+                search_results_df_html = search_results_df.to_html(escape=False, index=False)
+            else:
+                 search_results_df_html = None
+
             return render_template('results.html', search_query=search_query, search_results=search_results_df_html)
 
     return render_template('search.html')
