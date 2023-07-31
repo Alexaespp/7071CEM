@@ -1,8 +1,8 @@
+<!--HTML structure of the search results page, where the user can see the results of their query-->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Search Results - CGL Search Engine</title>
-    <!-- Add Bootstrap CSS link here -->
+    <title>CGL Search Engine</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .header {
@@ -10,7 +10,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            background-color: #005B9A;
+            background-color: #0070BB;
             padding: 15px;
             text-align: left;
             color: white;
@@ -18,20 +18,21 @@
             font-weight: bold;
         }
 
-        /* Style the column names in dark blue */
-        .table thead th {
-            background-color: #005B9A;
-            color: white;
+        .footer-text {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 15px;
+            color: #888;
         }
 
-        /* Set a fixed width for each table column */
-        .table-layout-fixed {
-            table-layout: fixed;
+        .search-query-text {
+            font-size: 28px;
         }
 
-        /* Set the width for each table header cell */
-        .table th {
-            width: 20%;
+        .search-query-data {
+            font-size: 24px;
+            font-weight: normal; 
         }
     </style>
 </head>
@@ -40,18 +41,20 @@
     <div class="container mt-4">
         <h1 class="text-center">Search Results</h1>
 
-        <!-- Display the search query -->
+        <!-- Search query -->
         <div class="text-center mb-3">
-            <strong>Search Query:</strong> {{ search_query }}
+            <strong class="search-query-text">Search Query: </strong>
+            <span class="search-query-data">{{ search_query }}</span>
         </div>
 
-        <!-- Display the search results here -->
+        <!-- Search results -->
         <div class="table-responsive">
             {% if search_results %}
                 <table class="table table-bordered table-hover table-layout-fixed">
-                    <tbody>
+                    <tbody><h2>
                         {{ search_results | safe }}
-                    </tbody>
+                    </h2>
+                </tbody>
                 </table>
             {% else %}
                 <div class="alert alert-info">
@@ -60,5 +63,8 @@
             {% endif %}
         </div>
     </div>
+
+    <!-- Footer -->
+    <div class="footer-text">This application was made by Alexandra Espialidou©</div>
 </body>
 </html>

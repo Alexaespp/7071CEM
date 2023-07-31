@@ -1,13 +1,15 @@
+<!--HTML structure of the search page, where the user can input a search query-->
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>CGL Search Engine</title>
-    <!-- Add Bootstrap CSS link here -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Add your custom styles here if needed */
         body {
-            padding-top: 60px; /* To add space for the header */
+            padding-top: 200px; 
+            position: relative; 
+            min-height: 100vh; 
         }
 
         .header {
@@ -15,21 +17,42 @@
             top: 0;
             left: 0;
             width: 100%;
-            background-color: #005B9A;
+            background-color: #0070BB;
             padding: 15px;
             text-align: left;
             color: white;
             font-size: 24px;
             font-weight: bold;
         }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .search-image {
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        .footer-text {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 15px;
+            color: #888;
+        }
     </style>
 </head>
 <body>
     <div class="header">Coventry University</div>
     <div class="container mt-4">
-        <h1 class="text-center">CGL Search Engine</h1>
+        <h1 class="text-center">CGL Publications Search</h1>
 
-        <!-- Add the search form here -->
+        <!-- Search form -->
         <form method="POST" action="/">
             <div class="input-group mb-3">
                 <input type="text" name="search_query" class="form-control" placeholder="Enter your search query">
@@ -38,31 +61,18 @@
                 </div>
             </div>
         </form>
-
-        <!-- Display the search query -->
-
-        <!-- Display the search results here -->
-        <div class="search-results">
-            {% if search_results %}
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Title</th>
-                                <th>Authors</th>
-                                <th>Date</th>
-                                <th>Title URL</th>
-                                <th>Authors URL</th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-light">
-                            {{ search_results | safe }}
-                        </tbody>
-                    </table>
-                </div>
-            
-            {% endif %}
+        <!-- CGL button -->
+        <div class="text-center">
+            <a href="https://pureportal.coventry.ac.uk/en/organisations/centre-global-learning" class="btn btn-info"
+             target="_blank">Visit the Centre for Global Learning </a>
         </div>
+
+        <!-- Coventry University logo -->
+        <div class="text-center">
+            <img src="https://ww1.freelogovectors.net/wp-content/uploads/2023/04/coventry_university_logo-freelogovectors.net_-640x360.png?lossy=1&ssl=1&fit=640%2C360" 
+            alt="Coventry University logo" class="search-image">
+        </div>
+        <div class="footer-text">This application was made by Alexandra Espialidou©</div>
     </div>
 </body>
 </html>

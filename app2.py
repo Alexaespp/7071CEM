@@ -1,3 +1,4 @@
+#Imports
 from flask import Flask, render_template, request
 import requests
 import csv
@@ -15,8 +16,10 @@ import math
 import pandas as pd
 from IPython.display import display, HTML
 
+#Creating the app
 app = Flask(__name__)
 
+#Crawler
 def crawler():
     coventry_url = "https://pureportal.coventry.ac.uk/en/organisations/centre-global-learning/publications/"
     all_data = []
@@ -58,38 +61,36 @@ def crawler():
                 dates= result.find('span', class_='date')
                 date = dates.text.strip()
             
-            #Combine all auhtors and remove duplicates
                 all_authors = list(set(author_names + non_cov_auth_names))
                 all_data.append([", ".join(all_authors), ",  ".join(author_links), title, title_url, date])
 
-    filename = "important_data6.csv"
+    filename = "important_data.csv"
     with open(filename, 'w', newline='', encoding='utf-8') as file:
         writer=csv.writer(file)
         writer.writerow(["Authors", "Authors_link", "Title", "Title_link", "Date"])
         writer.writerows(all_data)
     
     #print(f"Imported data were saved to {filename} successfully.")
-    
-    with open('important_data6.csv', 'r', newline='', encoding='utf-8') as file:
+
+    #Removal of null rows 
+    with open('important_data.csv', 'r', newline='', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         for row in reader:
             data.append(row)
-
-    # Filter the data to remove rows with null values
     filtered_data = [row for row in data if all(value for value in row.values())]
 
-    # Write the filtered data back to a new CSV file or overwrite the existing one
-    with open('important_data6.csv', 'w', newline='', encoding='utf-8') as file:
+    with open('important_data.csv', 'w', newline='', encoding='utf-8') as file:
             writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
             writer.writeheader()
             writer.writerows(filtered_data)
     
-#days = 0
+#Scheduling the crawler to crawl data once a week
 #interval = 7
+#days = 0
 #while days <= 1:
 #    crawler()
 #    time.sleep(interval)
-#    days = days + 1 
+ #   days = days + 1 
 
 def update_date_format(date):
     month_mapping = {
@@ -111,7 +112,7 @@ def update_date_format(date):
     return date
 
 punc = set(string.punctuation)
-filename = "important_data2.csv"
+filename = "important_data.csv"
 documents = []
 sw = stopwords.words('english')
 with open(filename, 'r', newline='', encoding='utf-8') as file:
@@ -124,7 +125,7 @@ with open(filename, 'r', newline='', encoding='utf-8') as file:
         documents.append((authors, title, date))
         
         
-#tokenization, removal of punctuation,stopwords, stemming
+#Tokenization, removal of punctuation, stopwords, stemming
 ps = PorterStemmer()
 ready_docs = []
 for doc in documents:
@@ -143,7 +144,7 @@ for doc in documents:
     
     ready_doc = (ready_authors, ready_title, ready_date)
     ready_docs.append(ready_doc)
-
+#print(ready_docs)
 
 index = defaultdict(list)
 for post_list, (authors, title, date) in enumerate(ready_docs, start=1):
@@ -154,6 +155,10 @@ for post_list, (authors, title, date) in enumerate(ready_docs, start=1):
     for token in tokens:
         index[token].append(post_list)
         
+#print("Inverted Index:")
+#for token, post_lists in index.items():
+#    print(f"{token}: {post_lists}")
+
 stemmer = PorterStemmer()
 def preprocess_query(query):
     query_terms = query.lower().split()
@@ -165,11 +170,11 @@ search_term = preprocess_query(search_term)
 results = []  
 search_results = []
 
+#Ranking of documents based on TF-IDF
 def calculate_idf(term, index, total_documents):
     doc_count_with_term = len(index.get(term, []))
     return math.log(total_documents / (doc_count_with_term + 1))
 
-# Function to calculate TF-IDF scores for the search query and documents
 def calculate_tfidf_scores(query, index, documents):
     tfidf_scores = {}
     query_terms = query.lower().split()
@@ -181,8 +186,6 @@ def calculate_tfidf_scores(query, index, documents):
     return tfidf_scores
 
 tfidf_scores = calculate_tfidf_scores(search_term, index, documents)
-
-# Function to calculate the relevance score for a document based on TF-IDF scores
 def calculate_relevance_score(doc_id, tfidf_scores, index):
     score = 0.0
     for term, tfidf_score in tfidf_scores.items():
@@ -190,6 +193,7 @@ def calculate_relevance_score(doc_id, tfidf_scores, index):
             score += tfidf_score
     return round(score, 2) 
 
+#Query processor
 for doc_id in set(doc_id for term in search_term.lower().split() for doc_id in index.get(term, [])):
     authors, title, date = documents[doc_id - 1]
     result_id = (tuple(authors), tuple(title), date)
@@ -198,9 +202,9 @@ for doc_id in set(doc_id for term in search_term.lower().split() for doc_id in i
     results.append((authors, title, date))
                          
 ranked_results = sorted(search_results, key=lambda x: x[1], reverse=True)   
-def create_dataframe(results):
+#Creating a dataframe to store the search results
+def dataframe(results):
     df = pd.DataFrame(results, columns=[
-        "Relevance Score",
         "Title",
         "Authors",
         "Date",
@@ -209,19 +213,6 @@ def create_dataframe(results):
     ])
     return df
 
-def create_dataframe_html(results):
-    df = pd.DataFrame(results, columns=[
-        "Relevance Score",
-        "Title",
-        "Authors",
-        "Date",
-        "Title URL",
-        "Authors URL"
-    ])
-    df['Title URL'] = df['Title URL'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
-    df['Authors URL'] = df['Authors URL'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
-
-    return df.to_html(escape=False)
 urls_dict = {}
 authors_urls_dict = {}
 with open(filename, 'r', newline='', encoding='utf-8') as file:
@@ -245,7 +236,6 @@ for result in results:
 
     for doc_id in ranked_results:
         search_result = (
-            relevance_score,
             title,
             authors_list,
             date,
@@ -253,11 +243,12 @@ for result in results:
             authors_url
         )
         search_results.append(search_result)   
-search_results_df = create_dataframe(search_results)
+search_results_df = dataframe(search_results)
 search_results_df.dropna(subset=["Title URL", "Authors URL"], inplace=True)
 search_results_df.drop_duplicates(subset=["Title"], keep="first", inplace=True)
 search_results_df.reset_index(drop=True, inplace=True)
 
+#Making the URL's clickable
 def make_clickable(urls):
     clickable_links = []
     for url in urls.split(", "):
@@ -269,6 +260,7 @@ search_results_df["Authors URL"] = search_results_df["Authors URL"].apply(make_c
 search_results_df_html = search_results_df.to_html(escape=False, index=False)
 display(HTML(search_results_df_html))
 
+#Defining the route of the app
 @app.route('/', methods=['GET', 'POST'])
 def search_page():
     if request.method == 'POST':
@@ -286,15 +278,9 @@ def search_page():
                 relevance_score = calculate_relevance_score(doc_id, tfidf_scores, index)
                 search_results.append((doc_id, relevance_score))
                 results.append((authors, title, date))
-
-                if not search_results:
-                    no_results_message = "No results found for the search query."
-                else:
-                    no_results_message = None
-
             ranked_results = sorted(search_results, key=lambda x: x[1], reverse=True)   
 
-            def create_dataframe(results):
+            def dataframe(results):
                 df = pd.DataFrame(results, columns=[
                     "Title",
                     "Authors",
@@ -303,18 +289,6 @@ def search_page():
                     "Authors URL"
                 ])
                 return df
-
-            def create_dataframe_html(results):
-                df = pd.DataFrame(results, columns=[
-                    "Title",
-                    "Authors",
-                    "Date",
-                    "Title URL",
-                    "Authors URL"
-                ])
-                df['Title URL'] = df['Title URL'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
-                df['Authors URL'] = df['Authors URL'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
-                return df.to_html(escape=False, index=False, header=False)
 
             urls_dict = {}
             authors_urls_dict = {}
@@ -347,11 +321,11 @@ def search_page():
                     )
                     search_results.append(search_result)  
                  
-            search_results_df = create_dataframe(search_results)
+            search_results_df = dataframe(search_results)
             search_results_df.dropna(subset=["Title URL", "Authors URL"], inplace=True)
             search_results_df.drop_duplicates(subset=["Title"], keep="first", inplace=True)
             search_results_df.reset_index(drop=True, inplace=True)
-
+            
             def make_clickable(urls):
                 clickable_links = []
                 for url in urls.split(", "):
@@ -370,5 +344,6 @@ def search_page():
 
     return render_template('search.html')
 
+#This script is being run as the main program
 if __name__ == '__main__':
     app.run(debug=True)
