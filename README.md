@@ -6,3 +6,5 @@ It is built in Python using BeautifulSoup in order to collect and parse relevant
 The text classification system (file text_classification.py) uses TF-IDF vectorization, sklearn library,
 and tkinter interface, to categorize text into three distinct categories (Sports, Business and Science).
 It is built in Python, using the nltk and sklearn library. The user interface is built using tkinter.
+
+The pdf file contains my paper for the 2 projects.
